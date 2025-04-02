@@ -1,0 +1,125 @@
+services:
+  kafka1:
+    image: bitnami/kafka:3.8.1
+    container_name: kafka11
+    user: root
+    environment:
+      ### 通用配置
+      # 允许使用kraft，即Kafka替代Zookeeper
+      - KAFKA_ENABLE_KRAFT=yes
+      # kafka 角色，做broker，也要做controller
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      # 指定供外部使用的控制类请求信息
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      # 定义kafka 服务端socket 监听端口
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      # 定义安全协议
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      # 使用Kafka时的集群id，集群内的Kafka都要用这个id做初始化，生成一个UUID即可
+      - KAFKA_KRAFT_CLUSTER_ID=pYzrpx9MQVyfiWPSr_NgYA
+      # 集群地址
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka11:9093,2@kafka22:9093,3@kafka33:9093
+      # 允许使用PLAINTEXT监听器，默认false，不建议在生产环境使用
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      # 设置broker最大内存，和初始内存
+      - KAFKA_HEAP_OPTS=-Xmx512M -Xms256M 
+      # 不允许自动创建主题
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false
+      ### broker配置
+      # 定义外网访问地址（宿主机ip地址和端口）
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://192.168.10.162:9192
+      # node id，必须唯一
+      - KAFKA_CFG_NODE_ID=1
+    ports:
+      - 9192:9092
+      - 9193:9093
+    networks:
+      - kraft-kafka-net
+    volumes:
+      - kraft-kafka-1-data:/bitnami/kafka
+
+  kafka2:
+    image: bitnami/kafka:3.8.1
+    container_name: kafka22
+    user: root
+    environment:
+      ### 通用配置
+      # 允许使用kraft，即Kafka替代Zookeeper
+      - KAFKA_ENABLE_KRAFT=yes
+      # kafka角色，做broker，也要做controller
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      # 指定供外部使用的控制类请求信息
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      # 定义kafka服务端socket监听端口
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      # 定义安全协议
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      # 使用Kafka时的集群id，集群内的Kafka都要用这个id做初始化，生成一个UUID即可
+      - KAFKA_KRAFT_CLUSTER_ID=pYzrpx9MQVyfiWPSr_NgYA
+      # 集群地址
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka11:9093,2@kafka22:9093,3@kafka33:9093
+      # 允许使用PLAINTEXT监听器，默认false，不建议在生产环境使用
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      # 设置broker最大内存，和初始内存
+      - KAFKA_HEAP_OPTS=-Xmx512M -Xms256M 
+      # 不允许自动创建主题
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false
+      ### broker配置
+      # 定义外网访问地址（宿主机ip地址和端口）
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://192.168.10.162:9292
+      # node id，必须唯一
+      - KAFKA_CFG_NODE_ID=2
+    ports:
+      - 9292:9092
+      - 9293:9093
+    networks:
+      - kraft-kafka-net
+    volumes:
+      - kraft-kafka-2-data:/bitnami/kafka
+
+  kafka3:
+    image: bitnami/kafka:3.8.1
+    container_name: kafka33
+    user: root
+    environment:
+      ### 通用配置
+      # 允许使用kraft，即Kafka替代Zookeeper
+      - KAFKA_ENABLE_KRAFT=yes
+      # kafka角色，做broker，也要做controller
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      # 指定供外部使用的控制类请求信息
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      # 定义kafka服务端socket监听端口
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      # 定义安全协议
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      # 使用Kafka时的集群id，集群内的Kafka都要用这个id做初始化，生成一个UUID即可
+      - KAFKA_KRAFT_CLUSTER_ID=pYzrpx9MQVyfiWPSr_NgYA
+      # 集群地址
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka11:9093,2@kafka22:9093,3@kafka33:9093
+      # 允许使用PLAINTEXT监听器，默认false，不建议在生产环境使用
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      # 设置broker最大内存，和初始内存
+      - KAFKA_HEAP_OPTS=-Xmx512M -Xms256M 
+      # 不允许自动创建主题
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false
+      ### broker配置
+      # 定义外网访问地址（宿主机ip地址和端口）
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://192.168.10.162:9392
+      # node id，必须唯一
+      - KAFKA_CFG_NODE_ID=3
+    ports:
+      - 9392:9092
+      - 9393:9093
+    networks:
+      - kraft-kafka-net
+    volumes:
+      - kraft-kafka-3-data:/bitnami/kafka
+
+volumes:
+  kraft-kafka-1-data:
+  kraft-kafka-2-data:
+  kraft-kafka-3-data:
+
+networks:
+  kraft-kafka-net:
