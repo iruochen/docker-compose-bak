@@ -1,0 +1,38 @@
+networks:
+  flink-network:
+
+services:
+  jobmanager:
+    image: flink:1.20.1
+    container_name: flink-jobmanager
+    hostname: flink-jobmanager
+    ports:
+      - "8081:8081"
+      - "6123:6123"
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
+    command: jobmanager
+    networks:
+      - flink-network
+
+  taskmanager-1:
+    image: flink:1.20.1
+    container_name: flink-taskmanager-1
+    depends_on:
+      - jobmanager
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
+    command: taskmanager
+    networks:
+      - flink-network
+
+  taskmanager-2:
+    image: flink:1.20.1
+    container_name: flink-taskmanager-2
+    depends_on:
+      - jobmanager
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
+    command: taskmanager
+    networks:
+      - flink-network
